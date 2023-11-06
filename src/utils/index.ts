@@ -1,8 +1,9 @@
-import type { TweenAttrNames } from './tween';
-import tween from './tween';
 export { default as axios } from './axios';
+export { default as events } from './events';
 export { default as encrypto } from './encrypto';
 export { default as matchPath } from './matchPath';
+import type { TweenAttrNames } from './tween';
+import tween from './tween';
 
 export function getType(data: any) {
   return Object.prototype.toString.call(data).slice(8, -1).toLowerCase();
@@ -250,7 +251,7 @@ export function toFixed(value: string | number | null, divisor = 10000, float = 
 }
 
 function getPattern(name: string) {
-  return new RegExp('(?:^|;) *' + name.replace(/[\^$\\.*+?()[\]{}|]/g, '\\$&') + '=([^;]*)');
+  return new RegExp('(?:^|;)\\s*' + name.replace(/[\^$\\.*+?()[\]{}|]/g, '\\$&') + '=([^;]*)');
 }
 
 /**

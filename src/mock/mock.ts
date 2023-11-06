@@ -1,3 +1,4 @@
+import './mock-home';
 import Mock from 'mockjs';
 
 // 登录
