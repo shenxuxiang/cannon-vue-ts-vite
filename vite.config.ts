@@ -1,13 +1,10 @@
 import path from 'path';
 import process from 'process';
-import { fileURLToPath } from 'url';
 import vue from '@vitejs/plugin-vue';
 import legacy from '@vitejs/plugin-legacy';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import { defineConfig, loadEnv } from 'vite';
 import postcssPresetEnv from 'postcss-preset-env';
-
-const __dirname = fileURLToPath(new URL('./', import.meta.url));
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '_VITE');
@@ -24,10 +21,10 @@ export default defineConfig(({ mode }) => {
     publicDir: 'public',
     plugins: [ vue(), vueJsx(), legacy() ],
     resolve: {
-      extensions: ['.tsx', '.ts'],
+      extensions: [ '.tsx', '.ts', '.jsx', '.js' ],
       alias: {
-        '@': path.resolve(__dirname, './src'),
-      },
+        '@': path.resolve('src'),
+      }
     },
     css: {
       devSourcemap: false,
