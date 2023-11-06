@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { shallowRef, ref, shallowReactive, onMounted, onUnmounted } from 'vue';
-import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import { getCookie, setCookie, encrypto, setUserToken } from '@/utils';
+import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import { Checkbox, Button, message } from 'ant-design-vue';
 import LoginInput from '@/components/LoginInput.vue';
 import { useRouter, useRoute } from 'vue-router';

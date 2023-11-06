@@ -1,3 +1,13 @@
+<script setup lang="ts">
+import router from '@/router';
+import { Button } from 'ant-design-vue';
+import imgURL from '@/assets/images/404.svg';
+
+function handleNavigateHome() {
+  router.push('/home');
+}
+</script>
+
 <template>
   <div class="page">
     <img :src="imgURL" alt="" class="img" />
@@ -8,16 +18,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import router from '@/router';
-import { Button } from 'ant-design-vue';
-import imgURL from '@/assets/images/404.svg';
-
-function handleNavigateHome() {
-  router.push('/home');
-}
-</script>
 
 <style scoped lang="less">
 .page {

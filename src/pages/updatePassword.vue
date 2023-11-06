@@ -1,54 +1,11 @@
-<template>
-  <main class="qm-login">
-    <section class="qm-login-container">
-      <div class="qm-login-illustration" />
-      <div class="qm-login-content">
-        <h1 class="qm-login-title">农机作业监管平台</h1>
-        <p class="qm-login-subtitle">让农机监管更方便的智能化平台</p>
-        <Input
-          ref="passwordRef"
-          v-model:value="password"
-          type="password"
-          autoComplete="off"
-          style="margin-top: 80px"
-          placeholder="请输入旧密码"
-          :rules="rules.password"
-          :prefixIcon="LockOutlined"
-        />
-        <Input
-          ref="newPasswordRef"
-          v-model:value="newPassword"
-          type="password"
-          autoComplete="off"
-          placeholder="请输入新密码"
-          :rules="rules.newPassword"
-          :prefixIcon="LockOutlined"
-        />
-        <Input
-          ref="confirmPasswordRef"
-          v-model:value="confirmPassword"
-          type="password"
-          autoComplete="off"
-          placeholder="请再次确认密码"
-          :prefixIcon="LockOutlined"
-          :rules="rules.confirmPassword"
-        />
-
-        <Button type="primary" class="qm-login-submit" @click="handleRegister">修改密码</Button>
-      </div>
-    </section>
-    <div class="login-footer">安徽阡陌网络科技有限公司 ©2022 Created by Qianmo</div>
-  </main>
-</template>
-
 <script setup lang="ts">
 import { shallowRef, ref, shallowReactive, onMounted, onUnmounted } from 'vue';
-import { useRouter } from 'vue-router';
-import Input from '@/components/LoginInput.vue';
-import { Button, message } from 'ant-design-vue';
+import LoginInput from '@/components/LoginInput.vue';
 import { LockOutlined } from '@ant-design/icons-vue';
-import { encrypto } from '@/utils';
 import { updatePassword } from '@/services/login';
+import { Button, message } from 'ant-design-vue';
+import { useRouter } from 'vue-router';
+import { encrypto } from '@/utils';
 
 const router = useRouter();
 const rules = shallowReactive({
@@ -116,6 +73,49 @@ function listenKeydown(event: any) {
   }
 }
 </script>
+
+<template>
+  <main class="qm-login">
+    <section class="qm-login-container">
+      <div class="qm-login-illustration" />
+      <div class="qm-login-content">
+        <h1 class="qm-login-title">农机作业监管平台</h1>
+        <p class="qm-login-subtitle">让农机监管更方便的智能化平台</p>
+        <LoginInput
+          ref="passwordRef"
+          v-model:value="password"
+          type="password"
+          autoComplete="off"
+          style="margin-top: 80px"
+          placeholder="请输入旧密码"
+          :rules="rules.password"
+          :prefixIcon="LockOutlined"
+        />
+        <LoginInput
+          ref="newPasswordRef"
+          v-model:value="newPassword"
+          type="password"
+          autoComplete="off"
+          placeholder="请输入新密码"
+          :rules="rules.newPassword"
+          :prefixIcon="LockOutlined"
+        />
+        <LoginInput
+          ref="confirmPasswordRef"
+          v-model:value="confirmPassword"
+          type="password"
+          autoComplete="off"
+          placeholder="请再次确认密码"
+          :prefixIcon="LockOutlined"
+          :rules="rules.confirmPassword"
+        />
+
+        <Button type="primary" class="qm-login-submit" @click="handleRegister">修改密码</Button>
+      </div>
+    </section>
+    <div class="login-footer">安徽阡陌网络科技有限公司 ©2022 Created by Qianmo</div>
+  </main>
+</template>
 
 <style lang="less">
 .qm-login {
