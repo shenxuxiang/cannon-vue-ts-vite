@@ -100,7 +100,10 @@ export function getPermissions(resourceTree: any[]) {
     if (type === 3) routePath = path;
     if (routePath) {
       menuMap.set(routePath, { path: routePath, name });
-      children?.length && stack.push(...children);
+      let length = children?.length ?? 0;
+      while (length--) {
+        stack.unshift(children[length]);
+      }
     }
   }
 

@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Popover, Layout, Avatar, Menu, Button, Space } from 'ant-design-vue';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue';
-import { ref, watch, inject, toRefs, getCurrentInstance } from 'vue';
 import type { BasicContextType } from '@/common/basicContext';
 import { RouterView, useRouter, useRoute } from 'vue-router';
 import avatarUrl from '@/assets/images/avatar.png';
+import { ref, watch, inject, toRefs } from 'vue';
 import { logout } from '@/services/login';
 
 const { Content, Sider, Header, Footer } = Layout;
@@ -24,10 +24,6 @@ watch(
   () => {
     selectedKeys.value = [route.fullPath];
     handleExpandKeys(route.fullPath);
-    const instance = getCurrentInstance();
-    if (instance) {
-      instance.appContext.app.config.globalProperties.userButtonList = userInfo.value.buttonNameList;
-    }
   },
   { immediate: true },
 );

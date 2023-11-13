@@ -1,6 +1,6 @@
-import type { MenuItems } from '@/router';
 import type { App } from 'vue';
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
+import type { MenuItems } from '@/router';
 
 export type BasicContext = {
   userInfo: any;
@@ -21,6 +21,14 @@ export default function install(app: App) {
     userMenuItems: [],
     userPermissions: new Map(),
   });
+
+  watch(
+    () => basic.userInfo,
+    () => {
+      app.config.globalProperties.userButtonList = basic.userInfo.buttonNameList;
+    },
+    { immediate: true },
+  );
 
   function updateBasicContext(context: Partial<BasicContext>) {
     Object.assign(basic, context);
