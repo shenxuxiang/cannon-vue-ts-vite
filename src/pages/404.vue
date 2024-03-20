@@ -1,20 +1,26 @@
 <script setup lang="ts">
+import { inject } from 'vue';
 import router from '@/router';
 import { Button } from 'ant-design-vue';
-import imgURL from '@/assets/images/404.svg';
+import NotFoundSvg from '@/assets/images/404.svg';
+import type { BasicContextType } from '@/common/basicContext';
 
-function handleNavigateHome() {
-  router.push('/home');
+const {
+  basicContext: { homeURL },
+} = inject<BasicContextType>('basicContext')!;
+
+function goHome() {
+  router.push(homeURL.value || '/login');
 }
 </script>
 
 <template>
   <div class="page">
-    <img :src="imgURL" alt="" class="img" />
+    <NotFoundSvg width="70%" height="" />
     <div>
       <h1 class="title">UH OH！页面丢失</h1>
       <p class="subtitle">您所访问的页面不存在，您可以点击下方的按钮，返回主页</p>
-      <Button ghost type="primary" class="button" @click="handleNavigateHome"> 返回首页 </Button>
+      <Button ghost type="primary" class="button" @click="goHome">返回首页</Button>
     </div>
   </div>
 </template>

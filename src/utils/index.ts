@@ -327,3 +327,43 @@ export function formatRegionCode(regionCode: string) {
   const town = regionCode.slice(0, 9);
   return [province, city, district, town, regionCode].slice(0, length);
 }
+
+/**
+ * 拆分页面路径 '/aa/bb/cc' => ['/aa', '/aa/bb', '/aa/bb/cc']
+ * @param pathname 页面路由
+ * @returns
+ */
+export function splitPath(pathname: string) {
+  const regexp = /(\/[^/?#]+)/g;
+  const expandKeys: string[] = [];
+  while (regexp.test(pathname)) {
+    expandKeys.push(pathname.slice(0, regexp.lastIndex));
+  }
+
+  return expandKeys;
+}
+
+/**
+ * 格式化请求参数
+ * @param query 请求参数
+ * @returns
+ */
+export function formatQueryData(query: {
+  order: Array<{ direction: boolean; field: string; [propName: string]: any }>;
+}) {
+  if ('order' in query) {
+    const { order } = query;
+    const data: any = { ...query };
+
+    const orders: string[] = [];
+    order.forEach((item) => {
+      orders.push(`${item.field},${item.direction ? 'asc' : 'desc'}`);
+    });
+
+    data.orders = orders;
+    delete data.order;
+    return data;
+  } else {
+    return query;
+  }
+}

@@ -5,7 +5,10 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
 import { Checkbox, Button, message } from 'ant-design-vue';
 import LoginInput from '@/components/LoginInput.vue';
 import { useRouter, useRoute } from 'vue-router';
-import { login } from '@/services/login';
+import { login } from '@/api/login';
+
+const title = import.meta.env.VITE_TITLE;
+const subtitle = import.meta.env.VITE_SUBTITLE;
 
 const router = useRouter();
 const route = useRoute();
@@ -22,7 +25,7 @@ const userName = ref('');
 const password = ref('');
 const checkedMemorizeUser = ref(false);
 const userNameRef = shallowRef<any>(null);
-const userPassword = shallowRef<any>(null);
+const userPasswordRef = shallowRef<any>(null);
 
 onMounted(() => {
   const memorizeUser = getCookie('_MEMORIZE_USER');
@@ -38,27 +41,25 @@ onUnmounted(() => {
 // 用户登录
 function handleRegister() {
   const v1 = userNameRef.value.validator();
-  const v2 = userPassword.value.validator();
+  const v2 = userPasswordRef.value.validator();
   if (v1 === true && v2 === true) {
     login({
       username: userName.value,
       password: encrypto(password.value),
     }).then((response: any) => {
-      const { code, data } = response;
-      if (code === 0) {
-        message.success('登录成功');
-        // 如果用户勾选了【记住用户名】，将保存用户名，有效期一个月（31天）
-        checkedMemorizeUser.value && setCookie('_MEMORIZE_USER', userName.value, 2678400);
+      const { data } = response;
+      message.success('登录成功');
+      // 如果用户勾选了【记住用户名】，将保存用户名，有效期一个月（31天）
+      checkedMemorizeUser.value && setCookie('_MEMORIZE_USER', userName.value, 2678400);
 
-        setUserToken(data.token);
-        navigateToOriginalPage();
-      }
+      setUserToken(data.token);
+      goBack();
     });
   }
 }
 
 // 登录完成后的路由重定向
-function navigateToOriginalPage() {
+function goBack() {
   const {
     query: { redirect },
   } = route;
@@ -85,8 +86,8 @@ function listenKeydown(event: any) {
     <section class="qm-login-container">
       <div class="qm-login-illustration" />
       <div class="qm-login-content">
-        <h1 class="qm-login-title">农机作业监管平台</h1>
-        <p class="qm-login-subtitle">让农机监管更方便的智能化平台</p>
+        <h1 class="qm-login-title">{{ title }}</h1>
+        <p class="qm-login-subtitle">{{ subtitle }}</p>
 
         <LoginInput
           ref="userNameRef"
@@ -99,7 +100,7 @@ function listenKeydown(event: any) {
           :prefixIcon="UserOutlined"
         />
         <LoginInput
-          ref="userPassword"
+          ref="userPasswordRef"
           v-model:value="password"
           type="password"
           autoComplete="off"
@@ -194,4 +195,4 @@ function listenKeydown(event: any) {
   text-align: center;
 }
 </style>
-@/store/workInfo
+@/store/workInfo @/api/login

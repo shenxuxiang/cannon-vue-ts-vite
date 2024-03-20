@@ -2,9 +2,12 @@ import axios from 'axios';
 import router from '@/router';
 import { getUserToken } from '@/utils';
 import { message } from 'ant-design-vue';
+import { pathToRegexp } from 'path-to-regexp';
 import type { InternalAxiosRequestConfig, AxiosRequestConfig, AxiosResponse, AxiosInstance, AxiosError } from 'axios';
 
 let abortController = new AbortController();
+// 登录页路径url正则表达式
+const loginPagePathPattern = pathToRegexp('/login');
 
 function abortRequest() {
   if (abortController) {
@@ -145,8 +148,10 @@ class Request<AxiosRequestConfig> {
   // 重定向到登录页
   redirectionToLogin() {
     const { push, currentRoute } = router;
-    const fullPath = currentRoute.value.fullPath;
-    if (fullPath === '/login') return;
+    const { path, fullPath } = currentRoute.value;
+
+    // 判断用户当前所在页面是否为登录页
+    if (loginPagePathPattern.test(path)) return;
     const querystring = window.encodeURIComponent(fullPath);
     push('/login?redirection=' + querystring);
   }
@@ -157,6 +162,10 @@ class Request<AxiosRequestConfig> {
 
   getBlob(url: string, params?: RequestParams): Promise<ResponseData> {
     return this.instance.get(url, { params, responseType: 'blob' });
+  }
+
+  postBlob(url: string, params?: RequestParams): Promise<ResponseData> {
+    return this.instance.post(url, params, { responseType: 'blob' });
   }
 
   delete(url: string, params?: RequestParams): Promise<ResponseData> {

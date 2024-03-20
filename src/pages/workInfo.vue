@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { queryWorkInfoPageList } from '@/services/workInfo';
+import { queryWorkInfoPageList } from '@/api/workInfo';
 import { ContentFormTable } from 'qm-vnit-vue';
 import { Popconfirm } from 'ant-design-vue';
 import { reactive, computed } from 'vue';
@@ -100,3 +100,4 @@ function handlePaginationChange(pageNum: number, pageSize: number) {
     </ContentFormTable>
   </div>
 </template>
+@/api/workInfo

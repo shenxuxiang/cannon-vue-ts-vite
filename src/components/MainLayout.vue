@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { MenuFoldOutlined, MenuUnfoldOutlined, SlackSquareOutlined } from '@ant-design/icons-vue';
 import { Popover, Layout, Avatar, Menu, Button, Space } from 'ant-design-vue';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons-vue';
 import type { BasicContextType } from '@/common/basicContext';
 import { RouterView, useRouter, useRoute } from 'vue-router';
 import avatarUrl from '@/assets/images/avatar.png';
 import { ref, watch, inject, toRefs } from 'vue';
-import { logout } from '@/services/login';
+import { logout } from '@/api/login';
+import { splitPath } from '@/utils';
 
+const VITE_TITLE = import.meta.env.VITE_TITLE;
 const { Content, Sider, Header, Footer } = Layout;
 
 const route = useRoute();
@@ -20,10 +22,10 @@ const { userInfo, userMenuItems } = toRefs(basicContext);
 
 // 监听路由变化
 watch(
-  [userInfo, () => route.fullPath],
+  [userInfo, () => route.path],
   () => {
-    selectedKeys.value = [route.fullPath];
-    handleExpandKeys(route.fullPath);
+    selectedKeys.value = [route.path];
+    handleExpandKeys(route.path);
   },
   { immediate: true },
 );
@@ -45,16 +47,8 @@ function handleUpdatePasswd() {
   router.push('/update-passwd');
 }
 
-function handleExpandKeys(fullPath: string) {
-  const reg = /(\/[^\/]+)/g;
-  const keys: string[] = [];
-  let i = 0;
-  while (reg.test(fullPath)) {
-    const prev = keys[i - 1] || '';
-    keys.push(prev + RegExp.lastParen);
-    i++;
-  }
-  openKeys.value = keys;
+function handleExpandKeys(pathname: string) {
+  openKeys.value = splitPath(pathname);
 }
 </script>
 
@@ -62,8 +56,11 @@ function handleExpandKeys(fullPath: string) {
   <Layout style="min-height: 100vh" theme="light">
     <Sider theme="light" :width="240" :collapsed="menuCollapse">
       <section class="qm-logo">
-        <div class="qm-log-bg" />
-        <h1 :class="['qm-log-title', { hide: menuCollapse }]">界首市农机作业平台</h1>
+        <SlackSquareOutlined
+          class="qm-log-icon"
+          :style="{ transform: menuCollapse ? 'translateX(18px) scale(1.2)' : 'translateX(5px) scale(1)' }"
+        />
+        <h1 :class="['qm-log-title', { hide: menuCollapse }]">{{ VITE_TITLE }}</h1>
       </section>
       <Menu
         v-model:openKeys="openKeys"
@@ -115,6 +112,8 @@ function handleExpandKeys(fullPath: string) {
   align-items: center;
   width: 100%;
   height: 64px;
+  padding: 8px;
+  box-sizing: border-box;
   &::after {
     position: absolute;
     bottom: 0;
@@ -124,22 +123,23 @@ function handleExpandKeys(fullPath: string) {
     background: rgba(1, 1, 1, 0.03);
   }
 }
-.qm-log-bg {
-  flex-shrink: 0;
-  width: 48px;
-  height: 48px;
-  margin-left: 15px;
-  background: url(@/assets/images/logo.png) no-repeat left top / contain;
+.qm-log-icon {
+  // margin-left: 8px;
+  font-size: 30px;
+  transition: 0.3s ease;
+  color: @themeColor;
+  transform: translateX(5px);
 }
 .qm-log-title {
   flex: 1 0 0;
   line-height: 1;
   font-size: 18px;
   font-weight: bold;
-  color: #6c69ff;
+  color: @themeColor;
   white-space: nowrap;
   overflow: hidden;
   transition: all 0.3s ease;
+  margin-left: 10px;
   &.hide {
     flex: 0;
     opacity: 0;
@@ -209,3 +209,4 @@ function handleExpandKeys(fullPath: string) {
   }
 }
 </style>
+@/api/login

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { queryRoleTableList } from '@/services/systemRole';
+import { queryRoleTableList } from '@/api/systemRole';
 import { Tag, Button, Popconfirm } from 'ant-design-vue';
 import { ContentFormTable } from 'qm-vnit-vue';
 import useMainStore from '@/store/main';
@@ -88,3 +88,4 @@ const columns = computed(() => [
     </template>
   </ContentFormTable>
 </template>
+@/api/systemRole

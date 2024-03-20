@@ -1,13 +1,14 @@
 import path from 'path';
 import process from 'process';
 import vue from '@vitejs/plugin-vue';
+import svgLoader from 'vite-svg-loader';
 import legacy from '@vitejs/plugin-legacy';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import { defineConfig, loadEnv } from 'vite';
 import postcssPresetEnv from 'postcss-preset-env';
+import { defineConfig, loadEnv, splitVendorChunkPlugin } from 'vite';
 
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '_VITE');
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
 
   const define = Object.keys(env).reduce((memo, key) => {
     memo[key] = JSON.stringify(env[key]);
@@ -17,9 +18,16 @@ export default defineConfig(({ mode }) => {
   return {
     mode,
     define,
+    base: env.VITE_BASE_URL,
     clearScreen: true,
     publicDir: 'public',
-    plugins: [ vue(), vueJsx(), legacy() ],
+    plugins: [
+      vue(),
+      vueJsx(),
+      legacy(),
+      splitVendorChunkPlugin(),
+      svgLoader({ defaultImport: 'component' }),
+    ],
     resolve: {
       extensions: [ '.tsx', '.ts', '.jsx', '.js' ],
       alias: {
@@ -36,7 +44,12 @@ export default defineConfig(({ mode }) => {
           globalVars: {},
           additionalData: '',
           javascriptEnable: true,
-          modifyVars: { themeColor: '#6C69FF' },
+          modifyVars: {
+            themeColor: env.VITE_THEME_COLOR,
+            // 在每个 less 文件中导入定义的 less 变量。
+            // var.less 中定义的变量全局共享。
+            hack: `true; @import (reference) "${path.resolve('src/assets/styles/var.less')}";`,
+          },
         }
       },
     },
@@ -60,7 +73,7 @@ export default defineConfig(({ mode }) => {
           chunkFileNames: 'static/js/[name][hash:8].chunk.js',
           assetFileNames: (chunkInfo) => {
             const { name } = chunkInfo;
-            if (/\.(jpg|jpeg|png|webp|bmp|gif|svg)$/.test(name)) {
+            if (/\.(jpg|jpeg|png|webp|bmp|gif)$/.test(name)) {
               return 'static/image/[name].[hash][extname]';
             } else if (/\.(woff2|woff|ttf|eot)$/.test(name)) {
               return 'static/font/[name].[hash][extname]';
@@ -70,9 +83,6 @@ export default defineConfig(({ mode }) => {
               return 'static/[ext]/[name].[hash][extname]';
             }
           },
-          manualChunks: {
-            'vendor-react': [ 'react', 'react-dom' ]
-          }
         }
       }
     },

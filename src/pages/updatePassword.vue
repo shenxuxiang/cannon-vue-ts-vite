@@ -2,8 +2,8 @@
 import { shallowRef, ref, shallowReactive, onMounted, onUnmounted } from 'vue';
 import LoginInput from '@/components/LoginInput.vue';
 import { LockOutlined } from '@ant-design/icons-vue';
-import { updatePassword } from '@/services/login';
 import { Button, message } from 'ant-design-vue';
+import { updatePassword } from '@/api/login';
 import { useRouter } from 'vue-router';
 import { encrypto } from '@/utils';
 
