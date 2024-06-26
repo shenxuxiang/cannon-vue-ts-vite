@@ -21,14 +21,14 @@
   "dependencies": {
     "@babel/runtime-corejs3": "^7.23.2",
     "@types/mockjs": "^1.0.9",
-    "ant-design-vue": "4.0.0",
+    "ant-design-vue": "^4.2.3",
     "axios": "^1.6.0",
     "jssha": "^3.3.1",
     "mockjs": "^1.1.0",
     "path-to-regexp": "^6.2.1",
     "pinia": "^2.1.7",
     "qm-vnit-vue": "^0.1.7",
-    "vue": "^3.3.4",
+    "vue": "^3.4.30",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
