@@ -100,4 +100,3 @@ function handlePaginationChange(pageNum: number, pageSize: number) {
     </ContentFormTable>
   </div>
 </template>
-@/api/workInfo

@@ -367,3 +367,26 @@ export function formatQueryData(query: {
     return query;
   }
 }
+
+/**
+ * 检测当前 element 是否是目标元素
+ * @param element   要查询的目标元素
+ * @param selector  CSS 选择器
+ * @returns
+ */
+export function elementMatches(element: Element, selector: string) {
+  if (typeof element.matches === 'function') {
+    return element.matches(selector);
+  } else if (typeof (element as any).mozMatchesSelector === 'function') {
+    return (element as any).mozMatchesSelector?.(selector);
+  } else if (typeof element.webkitMatchesSelector === 'function') {
+    return element.webkitMatchesSelector(selector);
+  } else {
+    const matches = document.querySelectorAll(selector);
+    let length = matches.length;
+    while (length--) {
+      if (matches[length] === element) return true;
+    }
+    return false;
+  }
+}

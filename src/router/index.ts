@@ -2,6 +2,7 @@ import { getUserToken, isEmpty, matchPath, setLocalStorage } from '@/utils';
 import type { BasicContextType } from '@/common/basicContext';
 import { createRouter, createWebHistory } from 'vue-router';
 import MainLayout from '@/components/MainLayout.vue';
+import LazyLoader from '@/components/LazyLoader';
 import type { RouteRecordRaw } from 'vue-router';
 import { pathToRegexp } from 'path-to-regexp';
 import { message } from 'ant-design-vue';
@@ -9,7 +10,6 @@ import useMainStore from '@/store/main';
 import routerMap from './routerMap';
 import type { VNode } from 'vue';
 import { inject } from 'vue';
-import LazyLoader from '@/components/LazyLoader';
 
 const BASE_URL = import.meta.env.BASE_URL;
 // 白名单

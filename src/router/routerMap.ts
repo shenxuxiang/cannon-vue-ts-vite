@@ -39,6 +39,14 @@ const routerMap: RouterItem[] = [
         meta: { requiresAuth: true },
         component: LazyLoader(() => import('../pages/system/role/index.vue')),
       },
+      {
+        name: 'system-user',
+        path: '/system/user',
+        label: '角色管理',
+        icon: () => h(UserSwitchOutlined, { style: iconStyle }),
+        meta: { requiresAuth: true },
+        component: LazyLoader(() => import('../pages/system/user/index.vue')),
+      },
     ],
   },
 ];
