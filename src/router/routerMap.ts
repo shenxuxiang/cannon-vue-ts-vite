@@ -14,14 +14,12 @@ export type RouterItem = {
   component?: RouteComponent;
 };
 
-const iconStyle = 'font-size: 18px; margin-right: 10px';
-
 const routerMap: RouterItem[] = [
   {
     name: 'work-info',
     path: '/work-info',
     label: '作业信息',
-    icon: () => h(HomeOutlined, { style: iconStyle }),
+    icon: () => h(HomeOutlined),
     meta: { requiresAuth: true },
     component: LazyLoader(() => import('../pages/workInfo.vue')),
   },
@@ -29,13 +27,13 @@ const routerMap: RouterItem[] = [
     name: 'system',
     path: '/system',
     label: '系统管理',
-    icon: () => h(SettingOutlined, { style: iconStyle }),
+    icon: () => h(SettingOutlined),
     children: [
       {
         name: 'system-role',
         path: '/system/role',
         label: '角色管理',
-        icon: () => h(UserSwitchOutlined, { style: iconStyle }),
+        icon: () => h(UserSwitchOutlined),
         meta: { requiresAuth: true },
         component: LazyLoader(() => import('../pages/system/role/index.vue')),
       },
@@ -43,7 +41,7 @@ const routerMap: RouterItem[] = [
         name: 'system-user',
         path: '/system/user',
         label: '角色管理',
-        icon: () => h(UserSwitchOutlined, { style: iconStyle }),
+        icon: () => h(UserSwitchOutlined),
         meta: { requiresAuth: true },
         component: LazyLoader(() => import('../pages/system/user/index.vue')),
       },

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { MenuFoldOutlined, MenuUnfoldOutlined, SlackSquareOutlined } from '@ant-design/icons-vue';
+import { splitPath, matchPath, setLocalStorage, getLocalStorage } from '@/utils';
 import { Layout, Avatar, Menu, Dropdown, Breadcrumb } from 'ant-design-vue';
 import type { NavBarList } from 'qm-vnit-vue/lib/NavigationBar';
 import type { BasicContextType } from '@/common/basicContext';
 import { RouterView, useRouter, useRoute } from 'vue-router';
-import { splitPath, matchPath, setLocalStorage, getLocalStorage, isEmpty } from '@/utils';
+import { ref, watch, inject, nextTick } from 'vue';
 import { NavigationBar } from 'qm-vnit-vue';
-import { ref, watch, inject } from 'vue';
 import { logout } from '@/api/login';
+
+const { Item: BreadcrumbItem } = Breadcrumb;
+const { Item: MenuItem } = Menu;
 
 const VITE_TITLE = import.meta.env.VITE_TITLE;
 const { Content, Sider, Header, Footer } = Layout;
@@ -28,10 +31,7 @@ watch(
   [userInfo, () => route.path],
   () => {
     selectedKeys.value = [route.path];
-    if (menuCollapse.value === true) {
-      if (isEmpty(openKeys.value)) return;
-      openKeys.value = [];
-    } else {
+    if (menuCollapse.value === false) {
       const newOpenKeys = openKeys.value.concat(splitPath(route.path));
       openKeys.value = [...new Set(newOpenKeys)];
     }
@@ -57,15 +57,13 @@ watch(
   { immediate: true },
 );
 
-watch(openKeys, () => {
-  console.log(openKeys.value, 'openKeys');
-});
-
 function handleTriggerMenuCollapse() {
   menuCollapse.value = !menuCollapse.value;
 
   if (menuCollapse.value === false) {
-    setTimeout(() => handleExpandKeys(route.path), 100);
+    nextTick(() => {
+      openKeys.value = splitPath(route.path);
+    });
   }
 }
 
@@ -74,21 +72,12 @@ function handleChangeSelectedKeys(values: any) {
   router.push(values.selectedKeys[0]);
 }
 
-function handleChangeOpenKeys(keys: any[]) {
-  openKeys.value = keys;
-  console.log(keys);
-}
-
 function handleLogout() {
   logout().then(() => router.push('/login'));
 }
 
 function handleUpdatePasswd() {
   router.push('/update-passwd');
-}
-
-function handleExpandKeys(pathname: string) {
-  openKeys.value = splitPath(pathname);
 }
 
 function navBarChange(key: string) {
@@ -133,11 +122,10 @@ function getPathOfMatchObject(routePath: string) {
         theme="light"
         mode="inline"
         style="border: none"
+        :items="userMenuItems"
         :selectedKeys="selectedKeys"
         :inlineCollapsed="menuCollapse"
-        :items="userMenuItems as any"
         @select="handleChangeSelectedKeys"
-        @openChange="handleChangeOpenKeys"
       />
     </Sider>
     <Layout>
@@ -149,21 +137,21 @@ function getPathOfMatchObject(routePath: string) {
           </div>
 
           <Breadcrumb>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item><a href="">Application Center</a></Breadcrumb.Item>
-            <Breadcrumb.Item><a href="">Application List</a></Breadcrumb.Item>
-            <Breadcrumb.Item>An Application</Breadcrumb.Item>
+            <BreadcrumbItem>Home</BreadcrumbItem>
+            <BreadcrumbItem><a href="">Application Center</a></BreadcrumbItem>
+            <BreadcrumbItem><a href="">Application List</a></BreadcrumbItem>
+            <BreadcrumbItem>An Application</BreadcrumbItem>
           </Breadcrumb>
 
           <Dropdown placement="bottomLeft">
             <template #overlay>
               <Menu>
-                <Menu.Item>
+                <MenuItem>
                   <div type="text" @click="handleLogout">退出登录</div>
-                </Menu.Item>
-                <Menu.Item>
+                </MenuItem>
+                <MenuItem>
                   <div type="text" @click="handleUpdatePasswd">修改密码</div>
-                </Menu.Item>
+                </MenuItem>
               </Menu>
             </template>
             <div class="qm-body-header-admin">
@@ -178,9 +166,11 @@ function getPathOfMatchObject(routePath: string) {
       </Header>
       <Content class="qm-container">
         <div class="qm-page-content">
-          <RouterView v-slot="{ Component }">
+          <RouterView v-slot="{ Component, route }">
             <transition name="router-fade" mode="out-in" appear>
-              <component :is="Component" />
+              <div :key="route.fullPath">
+                <component :is="Component" />
+              </div>
             </transition>
           </RouterView>
         </div>
