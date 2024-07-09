@@ -4,7 +4,7 @@ import { Layout, Avatar, Menu, Dropdown, Breadcrumb } from 'ant-design-vue';
 import type { NavBarList } from 'qm-vnit-vue/lib/NavigationBar';
 import type { BasicContextType } from '@/common/basicContext';
 import { RouterView, useRouter, useRoute } from 'vue-router';
-import { splitPath, matchPath, setLocalStorage, getLocalStorage } from '@/utils';
+import { splitPath, matchPath, setLocalStorage, getLocalStorage, isEmpty } from '@/utils';
 import { NavigationBar } from 'qm-vnit-vue';
 import { ref, watch, inject } from 'vue';
 import { logout } from '@/api/login';
@@ -28,7 +28,13 @@ watch(
   [userInfo, () => route.path],
   () => {
     selectedKeys.value = [route.path];
-    handleExpandKeys(route.path);
+    if (menuCollapse.value === true) {
+      if (isEmpty(openKeys.value)) return;
+      openKeys.value = [];
+    } else {
+      const newOpenKeys = openKeys.value.concat(splitPath(route.path));
+      openKeys.value = [...new Set(newOpenKeys)];
+    }
   },
   { immediate: true },
 );
@@ -51,13 +57,26 @@ watch(
   { immediate: true },
 );
 
+watch(openKeys, () => {
+  console.log(openKeys.value, 'openKeys');
+});
+
 function handleTriggerMenuCollapse() {
   menuCollapse.value = !menuCollapse.value;
+
+  if (menuCollapse.value === false) {
+    setTimeout(() => handleExpandKeys(route.path), 100);
+  }
 }
 
 function handleChangeSelectedKeys(values: any) {
   selectedKeys.value = values.selectedKeys;
   router.push(values.selectedKeys[0]);
+}
+
+function handleChangeOpenKeys(keys: any[]) {
+  openKeys.value = keys;
+  console.log(keys);
 }
 
 function handleLogout() {
@@ -113,11 +132,12 @@ function getPathOfMatchObject(routePath: string) {
         v-model:openKeys="openKeys"
         theme="light"
         mode="inline"
+        style="border: none"
         :selectedKeys="selectedKeys"
         :inlineCollapsed="menuCollapse"
         :items="userMenuItems as any"
-        style="border: none"
         @select="handleChangeSelectedKeys"
+        @openChange="handleChangeOpenKeys"
       />
     </Sider>
     <Layout>
